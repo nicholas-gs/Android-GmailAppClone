@@ -1,4 +1,4 @@
-package com.example.user.gmailappclone;
+package com.example.user.gmailappclone.Fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -26,6 +26,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.user.gmailappclone.Adapter.PrimaryRVAdapter;
 import com.example.user.gmailappclone.Model.Email;
+import com.example.user.gmailappclone.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,23 +36,23 @@ import java.util.ArrayList;
 
 import static com.android.volley.VolleyLog.TAG;
 
-public class PrimaryFragment extends Fragment {
+public class PrimaryFragment extends Fragment implements View.OnClickListener {
 
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
     private DividerItemDecoration dividerItemDecoration;
-    private FloatingActionButton floatingActionButton;
+    private FloatingActionButton newEmailFAB, scrollToTopFAB;
     private PrimaryRVAdapter adapter;
     private Handler handler = new Handler();
     private Context context;
     private ArrayList<Email> emailArrayList = new ArrayList<>();
-    private static final String databaseUrl = "https://api.jsonbin.io/b/5c223c46412d482eae54bc6a";
+    private static final String databaseUrl = "https://api.jsonbin.io/b/5c2399208c05c52ebaced1b0";
     private RequestQueue requestQueue;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.primary_layout_fragment, container, false);
+        return inflater.inflate(R.layout.primary_fragment_layout, container, false);
     }
 
     @Override
@@ -66,15 +67,72 @@ public class PrimaryFragment extends Fragment {
         adapter = new PrimaryRVAdapter(context, emailArrayList);
         recyclerView.setAdapter(adapter);
 
+        addRecyclerViewScrollListener();
         setSwipeToRefresh();
 
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+    }
+
+    private void initializeWidgets(View view) {
+        recyclerView = view.findViewById(R.id.primary_fragment_recyclerview);
+        swipeRefreshLayout = view.findViewById(R.id.primary_fragment_swiprerefreshlayout);
+        swipeRefreshLayout.setColorSchemeColors(ContextCompat.getColor(context, R.color.colorPrimary),
+                ContextCompat.getColor(context, R.color.colorTimestamp),
+                ContextCompat.getColor(context, R.color.colorIconTintSelected));
+
+        newEmailFAB = view.findViewById(R.id.primary_fragment_newEmail_fab);
+        newEmailFAB.setOnClickListener(this);
+        scrollToTopFAB = view.findViewById(R.id.primary_fragment_scrolltotop_fab);
+        scrollToTopFAB.setOnClickListener(this);
+
+        dividerItemDecoration = new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        recyclerView.setHasFixedSize(true);
+        recyclerView.addItemDecoration(dividerItemDecoration);
+        recyclerView.setNestedScrollingEnabled(false);
+
+    }
+
+    private void addRecyclerViewScrollListener() {
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onClick(View v) {
-                // Todo: Write a new email
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    // If cannot scroll up anymore (top of the recyclerview) - FAB hides immediately
+                    if (!recyclerView.canScrollVertically(-1) &&
+                            scrollToTopFAB.getVisibility() == View.VISIBLE) {
+                        scrollToTopFAB.setEnabled(false);
+                        scrollToTopFAB.hide();
+                    } else if (!recyclerView.canScrollVertically(1)) {
+                        // If cannot scroll down anymore (bottom of the recyclerview) - FAB remains shown
+                        scrollToTopFAB.setEnabled(true);
+                        scrollToTopFAB.show();
+                    } else {
+                        // If not at bottom or top, FAB will disappear after 500ms
+                        if (scrollToTopFAB.getVisibility() == View.VISIBLE)
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    scrollToTopFAB.setEnabled(false);
+                                    scrollToTopFAB.hide();
+                                }
+                            }, 500);
+                    }
+                }
+            }
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                // Detects if the recyclerview is scrolling both up or down
+                if (dy > 0 && scrollToTopFAB.getVisibility() == View.GONE || dy < 0 &&
+                        scrollToTopFAB.getVisibility() == View.GONE) {
+                    scrollToTopFAB.show();
+                    scrollToTopFAB.setEnabled(true);
+                }
             }
         });
     }
+
 
     private void parseJsonToAdapter(String url) {
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null,
@@ -116,21 +174,6 @@ public class PrimaryFragment extends Fragment {
         requestQueue.add(jsonArrayRequest);
     }
 
-    private void initializeWidgets(View view) {
-        recyclerView = view.findViewById(R.id.primary_fragment_recyclerview);
-        swipeRefreshLayout = view.findViewById(R.id.primary_fragment_swiprerefreshlayout);
-        swipeRefreshLayout.setColorSchemeColors(ContextCompat.getColor(context, R.color.colorPrimary),
-                ContextCompat.getColor(context, R.color.colorTimestamp),
-                ContextCompat.getColor(context, R.color.colorIconTintSelected));
-        floatingActionButton = view.findViewById(R.id.primary_fragment_fab);
-
-        dividerItemDecoration = new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        recyclerView.setHasFixedSize(true);
-        recyclerView.addItemDecoration(dividerItemDecoration);
-    }
-
     /**
      * Add functionality to the swipeRefreshLayout
      */
@@ -155,5 +198,17 @@ public class PrimaryFragment extends Fragment {
                 swipeRefreshLayout.setRefreshing(false);
             }
         }, 500);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.primary_fragment_newEmail_fab:
+                Toast.makeText(context, "New email", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.primary_fragment_scrolltotop_fab:
+                recyclerView.smoothScrollToPosition(0);
+                break;
+        }
     }
 }
