@@ -15,6 +15,8 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.user.gmailappclone.Fragments.PrimaryFragment;
+import com.example.user.gmailappclone.Fragments.PromotionsFragment;
+import com.example.user.gmailappclone.Fragments.SocialFragment;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -24,6 +26,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private NavigationView navigationView;
 
     private ImageView toggleArrow;
+    private int currentMenuItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getSupportFragmentManager().beginTransaction().replace(R.id.main_layout_container,
                 new PrimaryFragment()).commit();
         navigationView.setCheckedItem(R.id.nav_menu_closed_primary);
+        currentMenuItem = R.id.nav_menu_closed_primary;
     }
 
     @Override
@@ -66,12 +70,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             .commit();
                     break;
                 case R.id.nav_menu_closed_social:
-                    Toast.makeText(this, "Social", Toast.LENGTH_SHORT).show();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.main_layout_container,
+                            new SocialFragment()).commit();
                     break;
                 case R.id.nav_menu_closed_promotions:
-                    Toast.makeText(this, "Promotions", Toast.LENGTH_SHORT).show();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.main_layout_container,
+                            new PromotionsFragment()).commit();
                     break;
             }
+            drawerLayout.closeDrawer(GravityCompat.START);
         }
         return true;
     }
@@ -94,15 +101,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     v.setSelected(false);
                     navigationView.getMenu().clear();
                     navigationView.inflateMenu(R.menu.nav_menu_closed);
+                    navigationView.setCheckedItem(currentMenuItem);
 
                 } else {
                     v.setSelected(true);
+                    currentMenuItem = navigationView.getCheckedItem().getItemId();
                     navigationView.getMenu().clear();
                     navigationView.inflateMenu(R.menu.nav_menu_open);
                 }
             }
         });
     }
+
 
     @Override
     public void onBackPressed() {
