@@ -60,10 +60,10 @@ public class PrimaryFragment extends Fragment {
         context = getContext();
         initializeWidgets(view);
 
-        requestQueue = Volley.newRequestQueue(getContext());
+        requestQueue = Volley.newRequestQueue(context);
         parseJsonToAdapter(databaseUrl);
 
-        adapter = new PrimaryRVAdapter(getContext(), emailArrayList);
+        adapter = new PrimaryRVAdapter(context, emailArrayList);
         recyclerView.setAdapter(adapter);
 
         setSwipeToRefresh();
