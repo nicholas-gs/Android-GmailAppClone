@@ -1,10 +1,14 @@
 package com.example.user.gmailappclone;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -33,9 +38,12 @@ import static com.android.volley.VolleyLog.TAG;
 public class PrimaryFragment extends Fragment {
 
     private RecyclerView recyclerView;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private DividerItemDecoration dividerItemDecoration;
     private FloatingActionButton floatingActionButton;
     private PrimaryRVAdapter adapter;
+    private Handler handler = new Handler();
+    private Context context;
     private ArrayList<Email> emailArrayList = new ArrayList<>();
     private static final String databaseUrl = "https://api.jsonbin.io/b/5c223c46412d482eae54bc6a";
     private RequestQueue requestQueue;
@@ -49,16 +57,16 @@ public class PrimaryFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        context = getContext();
+        initializeWidgets(view);
 
-        recyclerView = view.findViewById(R.id.primary_fragment_recyclerview);
-        floatingActionButton = view.findViewById(R.id.primary_fragment_fab);
-        dividerItemDecoration = new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setHasFixedSize(true);
-        recyclerView.addItemDecoration(dividerItemDecoration);
         requestQueue = Volley.newRequestQueue(getContext());
-
         parseJsonToAdapter(databaseUrl);
+
+        adapter = new PrimaryRVAdapter(getContext(), emailArrayList);
+        recyclerView.setAdapter(adapter);
+
+        setSwipeToRefresh();
 
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,19 +99,61 @@ public class PrimaryFragment extends Fragment {
 
                                 emailArrayList.add(email);
                             }
-                            // Set adapter here since Volley Request are async
-                            adapter = new PrimaryRVAdapter(getContext(), emailArrayList);
-                            recyclerView.setAdapter(adapter);
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+                        adapter.notifyDataSetChanged();
+                        delaySwipeRefresh();
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
+                delaySwipeRefresh();
             }
         });
         requestQueue.add(jsonArrayRequest);
+    }
+
+    private void initializeWidgets(View view) {
+        recyclerView = view.findViewById(R.id.primary_fragment_recyclerview);
+        swipeRefreshLayout = view.findViewById(R.id.primary_fragment_swiprerefreshlayout);
+        swipeRefreshLayout.setColorSchemeColors(ContextCompat.getColor(context, R.color.colorPrimary),
+                ContextCompat.getColor(context, R.color.colorTimestamp),
+                ContextCompat.getColor(context, R.color.colorIconTintSelected));
+        floatingActionButton = view.findViewById(R.id.primary_fragment_fab);
+
+        dividerItemDecoration = new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        recyclerView.setHasFixedSize(true);
+        recyclerView.addItemDecoration(dividerItemDecoration);
+    }
+
+    /**
+     * Add functionality to the swipeRefreshLayout
+     */
+    private void setSwipeToRefresh() {
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                emailArrayList.clear();
+                adapter.notifyDataSetChanged();
+                parseJsonToAdapter(databaseUrl);
+            }
+        });
+    }
+
+    /**
+     * Delay the swipe refresh icon from disappearing
+     */
+    private void delaySwipeRefresh() {
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        }, 500);
     }
 }

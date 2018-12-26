@@ -2,7 +2,6 @@ package com.example.user.gmailappclone.Adapter;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -19,7 +18,6 @@ import com.example.user.gmailappclone.Model.Email;
 import com.example.user.gmailappclone.R;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
