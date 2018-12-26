@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">GmailAppClone</string>
+    <string name="open_drawer">open_drawer</string>
+    <string name="close_drawer">close_drawer</string>
 </resources>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group
+        android:id="@+id/nav_menu_closed_group1"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_menu_closed_primary"
+            android:icon="@drawable/ic_inbox_black_24dp"
+            android:title="Primary"
+            app:actionLayout="@layout/nav_header_counter" />
+        <item
+            android:id="@+id/nav_menu_closed_social"
+            android:icon="@drawable/ic_group_black_24dp"
+            android:title="Social"
+            app:actionLayout="@layout/nav_header_counter" />
+        <item
+            android:id="@+id/nav_menu_closed_promotions"
+            android:icon="@drawable/ic_local_offer_black_24dp"
+            android:title="Promotions"
+            app:actionLayout="@layout/nav_header_counter" />
+    </group>
+
+    <item android:title="All Labels">
+        <menu>
+            <group
+                android:id="@+id/nav_menu_closed_group2"
+                android:checkableBehavior="single">
+                <item
+                    android:id="@+id/nav_menu_closed_starred"
+                    android:icon="@drawable/ic_star_black_24dp"
+                    android:title="Starred"
+                    app:actionLayout="@layout/nav_header_counter" />
+                <item
+                    android:id="@+id/nav_menu_closed_snoozed"
+                    android:icon="@drawable/ic_clock_black_24dp"
+                    android:title="Snoozed"
+                    app:actionLayout="@layout/nav_header_counter" />
+                <item
+                    android:id="@+id/nav_menu_closed_important"
+                    android:icon="@drawable/ic_label_variant_black_24dp"
+                    android:title="Important"
+                    app:actionLayout="@layout/nav_header_counter" />
+                <item
+                    android:id="@+id/nav_menu_closed_sent"
+                    android:icon="@drawable/ic_send_black_24dp"
+                    android:title="Sent"
+                    app:actionLayout="@layout/nav_header_counter" />
+                <item
+                    android:id="@+id/nav_menu_closed_outbox"
+                    android:icon="@drawable/ic_inbox_arrow_up_black_24dp"
+                    android:title="Outbox"
+                    app:actionLayout="@layout/nav_header_counter" />
+                <item
+                    android:id="@+id/nav_menu_closed_drafts"
+                    android:icon="@drawable/ic_insert_drive_file_black_24dp"
+                    android:title="Drafts"
+                    app:actionLayout="@layout/nav_header_counter" />
+                <item
+                    android:id="@+id/nav_menu_closed_allmail"
+                    android:icon="@drawable/ic_folder_multiple_black_24dp"
+                    android:title="All mail"
+                    app:actionLayout="@layout/nav_header_counter" />
+                <item
+                    android:id="@+id/nav_menu_closed_spam"
+                    android:icon="@drawable/ic_alert_octagon_black_24dp"
+                    android:title="Spam"
+                    app:actionLayout="@layout/nav_header_counter" />
+                <item
+                    android:id="@+id/nav_menu_closed_bin"
+                    android:icon="@drawable/ic_delete_black_24dp"
+                    android:title="Bin"
+                    app:actionLayout="@layout/nav_header_counter" />
+            </group>
+        </menu>
+    </item>
+
+    <item android:title="Google apps">
+        <menu>
+            <group android:id="@+id/nav_header_group3">
+                <item
+                    android:id="@+id/nav_menu_closed_calendar"
+                    android:icon="@drawable/ic_calendar_blank_black_24dp"
+                    android:title="Calender" />
+                <item
+                    android:id="@+id/nav_menu_closed_contacts"
+                    android:icon="@drawable/ic_account_circle_black_24dp"
+                    android:title="Contacts" />
+            </group>
+        </menu>
+    </item>
+
+    <group android:id="@+id/nav_menu_closed_group4">
+        <item
+            android:id="@+id/nav_menu_closed_settings"
+            android:icon="@drawable/ic_settings_black_24dp"
+            android:title="Settings" />
+        <item
+            android:id="@+id/nav_menu_closed_helpfeedback"
+            android:icon="@drawable/ic_help_black_24dp"
+            android:title="Help &#38; feedback" />
+    </group>
+
+
+</menu>
