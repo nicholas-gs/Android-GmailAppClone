@@ -25,6 +25,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.user.gmailappclone.Adapter.PrimaryRVAdapter;
+import com.example.user.gmailappclone.Helper.VolleySingleton;
 import com.example.user.gmailappclone.Model.Email;
 import com.example.user.gmailappclone.R;
 
@@ -47,7 +48,7 @@ public class PrimaryFragment extends Fragment implements View.OnClickListener {
     private Context context;
     private ArrayList<Email> emailArrayList = new ArrayList<>();
     private static final String databaseUrl = "https://api.jsonbin.io/b/5c2399208c05c52ebaced1b0";
-    private RequestQueue requestQueue;
+    public RequestQueue requestQueue;
 
     @Nullable
     @Override
@@ -61,7 +62,7 @@ public class PrimaryFragment extends Fragment implements View.OnClickListener {
         context = getContext();
         initializeWidgets(view);
 
-        requestQueue = Volley.newRequestQueue(context);
+        requestQueue = VolleySingleton.checkInstance(context).getRequestQueue();
         parseJsonToAdapter(databaseUrl);
 
         adapter = new PrimaryRVAdapter(context, emailArrayList);
@@ -133,7 +134,6 @@ public class PrimaryFragment extends Fragment implements View.OnClickListener {
         });
     }
 
-
     private void parseJsonToAdapter(String url) {
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONArray>() {
@@ -197,7 +197,7 @@ public class PrimaryFragment extends Fragment implements View.OnClickListener {
             public void run() {
                 swipeRefreshLayout.setRefreshing(false);
             }
-        }, 500);
+        }, 1000);
     }
 
     @Override
