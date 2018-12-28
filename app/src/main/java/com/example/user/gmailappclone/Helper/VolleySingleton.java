@@ -1,4 +1,5 @@
 package com.example.user.gmailappclone.Helper;
+
 import android.content.Context;
 
 import com.android.volley.RequestQueue;
@@ -25,7 +26,4 @@ public class VolleySingleton {
     public RequestQueue getRequestQueue() {
         return requestQueue;
     }
-
-
-
 }
