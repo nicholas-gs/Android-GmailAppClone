@@ -5,11 +5,13 @@ import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -39,14 +41,24 @@ public class PrimaryRVAdapter extends RecyclerView.Adapter<PrimaryRVAdapter.MyVi
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        private LinearLayout linearLayout;
         private CircleImageView circularImageView;
         private TextView from, subject, message, timeStamp;
         private ImageView star;
+        private RelativeLayout foregroundContainer, backgroundContainer;
+
+        public RelativeLayout getForegroundContainer() {
+            return foregroundContainer;
+        }
+
+        public RelativeLayout getBackgroundContainer() {
+            return backgroundContainer;
+        }
 
         public MyViewHolder(@NonNull final View itemView) {
             super(itemView);
-            linearLayout = itemView.findViewById(R.id.emailrow_linearlayout);
+            foregroundContainer = itemView.findViewById(R.id.emailrow_foreground_container);
+            backgroundContainer = itemView.findViewById(R.id.emailrow_background_container);
+
             circularImageView = itemView.findViewById(R.id.emailrow_imageview);
             from = itemView.findViewById(R.id.emailrow_from);
             subject = itemView.findViewById(R.id.emailrow_subject);
@@ -57,10 +69,9 @@ public class PrimaryRVAdapter extends RecyclerView.Adapter<PrimaryRVAdapter.MyVi
             star.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(v.isSelected()){
+                    if (v.isSelected()) {
                         v.setSelected(false);
-                    }
-                    else{
+                    } else {
                         v.setSelected(true);
                     }
                 }
@@ -128,7 +139,8 @@ public class PrimaryRVAdapter extends RecyclerView.Adapter<PrimaryRVAdapter.MyVi
     }
 
     private void loadImage(String imageUrl, MyViewHolder myViewHolder) {
-        if (imageUrl == null) {
+        if (imageUrl.equals("null")) {
+            myViewHolder.circularImageView.setImageResource(R.drawable.ic_launcher_background);
         } else {
             Glide.with(context).load(imageUrl)
                     .apply(new RequestOptions().centerCrop().placeholder(R.drawable.ic_launcher_background))
@@ -146,4 +158,22 @@ public class PrimaryRVAdapter extends RecyclerView.Adapter<PrimaryRVAdapter.MyVi
         }
     }
 
+    /**
+     * Removes the item at *position* from the recyclerview
+     *
+     * @param position
+     */
+    public void removeItem(int position) {
+        if (position < emails.size() && position >= 0) {
+            emails.remove(position);
+            this.notifyItemRemoved(position);
+        }
+    }
+
+    public void addItem(int position, Email newEmail) {
+        if (position <= emails.size() && position >= 0) {
+            emails.add(position, newEmail);
+            this.notifyItemInserted(position);
+        }
+    }
 }

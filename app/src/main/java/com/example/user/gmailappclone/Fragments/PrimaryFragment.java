@@ -5,13 +5,16 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +28,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.user.gmailappclone.Adapter.PrimaryRVAdapter;
+import com.example.user.gmailappclone.Helper.RecyclerItemTouchHelper;
 import com.example.user.gmailappclone.Helper.VolleySingleton;
 import com.example.user.gmailappclone.Model.Email;
 import com.example.user.gmailappclone.R;
@@ -37,8 +41,8 @@ import java.util.ArrayList;
 
 import static com.android.volley.VolleyLog.TAG;
 
-public class PrimaryFragment extends Fragment implements View.OnClickListener {
-
+public class PrimaryFragment extends Fragment implements View.OnClickListener, RecyclerItemTouchHelper.RecyclerItemTouchHelperListener {
+    private CoordinatorLayout layoutContainer;
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
     private DividerItemDecoration dividerItemDecoration;
@@ -47,8 +51,9 @@ public class PrimaryFragment extends Fragment implements View.OnClickListener {
     private Handler handler = new Handler();
     private Context context;
     private ArrayList<Email> emailArrayList = new ArrayList<>();
-    private static final String databaseUrl = "https://api.jsonbin.io/b/5c2399208c05c52ebaced1b0";
-    public RequestQueue requestQueue;
+    private static final String databaseUrl = "https://api.jsonbin.io/b/5c25ba0e3f8bd92e4cc44965";
+    private RequestQueue requestQueue;
+    private RecyclerItemTouchHelper recyclerItemTouchHelper;
 
     @Nullable
     @Override
@@ -74,6 +79,7 @@ public class PrimaryFragment extends Fragment implements View.OnClickListener {
     }
 
     private void initializeWidgets(View view) {
+        layoutContainer = view.findViewById(R.id.primary_fragment_container);
         recyclerView = view.findViewById(R.id.primary_fragment_recyclerview);
         swipeRefreshLayout = view.findViewById(R.id.primary_fragment_swiprerefreshlayout);
         swipeRefreshLayout.setColorSchemeColors(ContextCompat.getColor(context, R.color.colorPrimary),
@@ -87,13 +93,20 @@ public class PrimaryFragment extends Fragment implements View.OnClickListener {
 
         dividerItemDecoration = new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
 
+
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.setHasFixedSize(true);
         recyclerView.addItemDecoration(dividerItemDecoration);
         recyclerView.setNestedScrollingEnabled(false);
+        ItemTouchHelper.SimpleCallback simpleCallback = new RecyclerItemTouchHelper(this,0,ItemTouchHelper.LEFT);
+        new ItemTouchHelper(simpleCallback).attachToRecyclerView(recyclerView);
 
     }
 
+    /**
+     * RecyclerView scroll listener:
+     * 1) Handle the scroll-to-top FAB
+     */
     private void addRecyclerViewScrollListener() {
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -182,7 +195,8 @@ public class PrimaryFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onRefresh() {
                 emailArrayList.clear();
-                adapter.notifyDataSetChanged();
+                adapter.notifyItemRangeRemoved(0, emailArrayList.size());
+                //adapter.notifyDataSetChanged();
                 parseJsonToAdapter(databaseUrl);
             }
         });
@@ -210,5 +224,27 @@ public class PrimaryFragment extends Fragment implements View.OnClickListener {
                 recyclerView.smoothScrollToPosition(0);
                 break;
         }
+    }
+
+    /**
+     * Handles what
+     * @param viewHolder
+     * @param direction
+     * @param position
+     */
+    @Override
+    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, final int position) {
+        // Temporary store the deleted email
+        final Email deletedEmail = emailArrayList.get(position);
+
+        adapter.removeItem(position);
+
+        Snackbar.make(layoutContainer,"Email archived",Snackbar.LENGTH_LONG)
+                .setAction("UNDO", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        adapter.addItem(position,deletedEmail);
+                    }
+                }).show();
     }
 }

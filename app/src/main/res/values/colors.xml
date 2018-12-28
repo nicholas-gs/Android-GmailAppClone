@@ -12,6 +12,8 @@
     <color name="colorRowActivated">#e0e0e0</color>
     <color name="colorBackgroundActionMode">#757575</color>
     <color name="colorBackgroundCircleDefault">#666666</color>
+    <color name="colorEmailRowBackground">#2E7D32</color>
+    <color name="colorEmailRowForeground">#fafafa</color>
 
 
 </resources>
