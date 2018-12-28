@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.example.user.gmailappclone.Fragments.PrimaryFragment;
 import com.example.user.gmailappclone.Fragments.PromotionsFragment;
 import com.example.user.gmailappclone.Fragments.SocialFragment;
+import com.example.user.gmailappclone.Helper.NetworkChecker;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -37,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         toggleNavigationDrawer();
         handleDrawerMenuToggle();
-        setDefaultFragment();
+        setDefaultFragment(savedInstanceState);
     }
 
     private void initializeWidgets() {
@@ -52,11 +53,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
     }
 
-    private void setDefaultFragment() {
-        getSupportFragmentManager().beginTransaction().replace(R.id.main_layout_container,
-                new PrimaryFragment()).commit();
-        navigationView.setCheckedItem(R.id.nav_menu_closed_primary);
-        currentMenuItem = R.id.nav_menu_closed_primary;
+    /**
+     * Sets the default fragment when the app cold starts
+     */
+    private void setDefaultFragment(Bundle bundle) {
+        if (!NetworkChecker.isOnline(this)) {
+            Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show();
+        }
+        if (bundle == null) {
+            navigationView.setCheckedItem(R.id.nav_menu_closed_primary);
+            currentMenuItem = R.id.nav_menu_closed_primary;
+            getSupportFragmentManager().beginTransaction().replace(R.id.main_layout_container,
+                    new PrimaryFragment()).commit();
+        }
     }
 
     @Override
@@ -77,7 +86,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     getSupportFragmentManager().beginTransaction().replace(R.id.main_layout_container,
                             new PromotionsFragment()).commit();
                     break;
+                case R.id.nav_menu_open_addaccount:
+                    Toast.makeText(this, "Add account pressed", Toast.LENGTH_SHORT).show();
+                    break;
             }
+            currentMenuItem = navigationView.getCheckedItem().getItemId();
             drawerLayout.closeDrawer(GravityCompat.START);
         }
         return true;
@@ -102,7 +115,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     navigationView.getMenu().clear();
                     navigationView.inflateMenu(R.menu.nav_menu_closed);
                     navigationView.setCheckedItem(currentMenuItem);
-
                 } else {
                     v.setSelected(true);
                     currentMenuItem = navigationView.getCheckedItem().getItemId();
