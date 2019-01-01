@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="90dp"
     android:paddingHorizontal="8dp"
-    android:background="@color/colorEmailRowForeground"
+    android:background="@color/colorStandardWhite"
     android:id="@+id/emailrow_foreground_container">
 
     <de.hdodenhof.circleimageview.CircleImageView

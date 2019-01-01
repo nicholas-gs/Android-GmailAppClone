@@ -1,31 +1,35 @@
 package com.example.user.gmailappclone;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.user.gmailappclone.Fragments.NewEmailFragment;
 import com.example.user.gmailappclone.Fragments.PrimaryFragment;
 import com.example.user.gmailappclone.Fragments.PromotionsFragment;
 import com.example.user.gmailappclone.Fragments.SocialFragment;
 import com.example.user.gmailappclone.Helper.NetworkChecker;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
+        NewEmailFragment.drawerLockerListener {
+    private AppBarLayout appBarLayout;
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
     private FrameLayout layoutContainer;
     private NavigationView navigationView;
-
+    private ActionBarDrawerToggle drawerToggle;
     private ImageView toggleArrow;
     private int currentMenuItem;
 
@@ -44,16 +48,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void initializeWidgets() {
         drawerLayout = findViewById(R.id.main_drawerlayout);
         layoutContainer = findViewById(R.id.main_layout_container);
-
+        appBarLayout = findViewById(R.id.main_appbarlayout);
         toolbar = findViewById(R.id.main_toolbar);
         toolbar.setTitle("Primary");
+
         setSupportActionBar(toolbar);
+        //Add back navigation in the title bar
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         navigationView = findViewById(R.id.main_navigationview);
         navigationView.setNavigationItemSelectedListener(this);
     }
 
     /**
+     * First checks if there is internet connection
      * Sets the default fragment when the app cold starts
      */
     private void setDefaultFragment(Bundle bundle) {
@@ -97,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void toggleNavigationDrawer() {
-        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
+        drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar,
                 R.string.open_drawer, R.string.close_drawer);
         drawerLayout.addDrawerListener(drawerToggle);
         drawerToggle.syncState();
@@ -128,10 +137,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onBackPressed() {
+        int num = getSupportFragmentManager().getBackStackEntryCount();
+        Log.d("MYTAG", "onItemClicked: " + num);
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            if(getSupportFragmentManager().getBackStackEntryCount() > 0){
+                getSupportFragmentManager().popBackStack();
+            }
+            else{
+                super.onBackPressed();
+            }
         }
     }
+
+    @Override
+    public void lockDrawer(boolean locked) {
+        if (locked) {
+            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+            drawerToggle.setDrawerIndicatorEnabled(false);
+
+        } else {
+            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+            drawerToggle.setDrawerIndicatorEnabled(true);
+        }
+    }
+
 }

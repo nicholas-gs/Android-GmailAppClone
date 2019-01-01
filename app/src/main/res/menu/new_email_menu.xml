@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <item
+        android:id="@+id/new_email_attachment"
+        android:icon="@drawable/ic_attachment_white_24dp"
+        android:title=""
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/new_email_send"
+        android:icon="@drawable/ic_send_white_24dp"
+        android:title=""
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/new_email_addfromcontacts"
+        android:title="Add from Contacts"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/new_email_confidentialmode"
+        android:title="Confidential mode"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/new_email_savedraft"
+        android:title="Save draft"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/new_email_discard"
+        android:title="Discard"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/new_email_settings"
+        android:title="Settings"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/new_email_helpandfeedback"
+        android:title="Help &amp; feedback"
+        app:showAsAction="never" />
+
+
+</menu>

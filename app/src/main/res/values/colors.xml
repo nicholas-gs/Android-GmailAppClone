@@ -13,7 +13,7 @@
     <color name="colorBackgroundActionMode">#757575</color>
     <color name="colorBackgroundCircleDefault">#666666</color>
     <color name="colorEmailRowBackground">#2E7D32</color>
-    <color name="colorEmailRowForeground">#fafafa</color>
-
+    <color name="colorStandardWhite">#fafafa</color>
+    <color name="colorLightGrey">#D3D3D3</color>
 
 </resources>

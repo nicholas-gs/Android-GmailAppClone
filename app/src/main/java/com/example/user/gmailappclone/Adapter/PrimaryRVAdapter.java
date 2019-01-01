@@ -5,12 +5,10 @@ import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -27,9 +25,18 @@ public class PrimaryRVAdapter extends RecyclerView.Adapter<PrimaryRVAdapter.MyVi
 
     private Context context;
     private ArrayList<Email> emails;
+    private onItemClickedListener listener;
 
     int[] colors;
     int noOfEmails;
+
+    public interface onItemClickedListener{
+        void onItemClicked(int position);
+    }
+
+    public void setOnItemClickedListener(onItemClickedListener listener){
+        this.listener = listener;
+    }
 
     //Constructor
     public PrimaryRVAdapter(Context context, ArrayList<Email> emails) {
@@ -74,6 +81,13 @@ public class PrimaryRVAdapter extends RecyclerView.Adapter<PrimaryRVAdapter.MyVi
                     } else {
                         v.setSelected(true);
                     }
+                }
+            });
+
+            foregroundContainer.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onItemClicked(getAdapterPosition());
                 }
             });
         }

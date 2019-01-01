@@ -9,6 +9,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
@@ -30,6 +31,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.user.gmailappclone.Adapter.PrimaryRVAdapter;
 import com.example.user.gmailappclone.Helper.RecyclerItemTouchHelper;
 import com.example.user.gmailappclone.Helper.VolleySingleton;
+import com.example.user.gmailappclone.MainActivity;
 import com.example.user.gmailappclone.Model.Email;
 import com.example.user.gmailappclone.R;
 
@@ -41,7 +43,9 @@ import java.util.ArrayList;
 
 import static com.android.volley.VolleyLog.TAG;
 
-public class PrimaryFragment extends Fragment implements View.OnClickListener, RecyclerItemTouchHelper.RecyclerItemTouchHelperListener {
+public class PrimaryFragment extends Fragment implements View.OnClickListener,
+        RecyclerItemTouchHelper.RecyclerItemTouchHelperListener, PrimaryRVAdapter.onItemClickedListener {
+
     private CoordinatorLayout layoutContainer;
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -53,11 +57,11 @@ public class PrimaryFragment extends Fragment implements View.OnClickListener, R
     private ArrayList<Email> emailArrayList = new ArrayList<>();
     private static final String databaseUrl = "https://api.jsonbin.io/b/5c25ba0e3f8bd92e4cc44965";
     private RequestQueue requestQueue;
-    private RecyclerItemTouchHelper recyclerItemTouchHelper;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        ((NewEmailFragment.drawerLockerListener) getActivity()).lockDrawer(false);
         return inflater.inflate(R.layout.primary_fragment_layout, container, false);
     }
 
@@ -71,8 +75,8 @@ public class PrimaryFragment extends Fragment implements View.OnClickListener, R
         parseJsonToAdapter(databaseUrl);
 
         adapter = new PrimaryRVAdapter(context, emailArrayList);
+        adapter.setOnItemClickedListener(this);
         recyclerView.setAdapter(adapter);
-
         addRecyclerViewScrollListener();
         setSwipeToRefresh();
 
@@ -98,7 +102,8 @@ public class PrimaryFragment extends Fragment implements View.OnClickListener, R
         recyclerView.setHasFixedSize(true);
         recyclerView.addItemDecoration(dividerItemDecoration);
         recyclerView.setNestedScrollingEnabled(false);
-        ItemTouchHelper.SimpleCallback simpleCallback = new RecyclerItemTouchHelper(this,0,ItemTouchHelper.LEFT);
+
+        ItemTouchHelper.SimpleCallback simpleCallback = new RecyclerItemTouchHelper(this, 0, ItemTouchHelper.LEFT);
         new ItemTouchHelper(simpleCallback).attachToRecyclerView(recyclerView);
 
     }
@@ -169,8 +174,8 @@ public class PrimaryFragment extends Fragment implements View.OnClickListener, R
                                         message, timeStamp);
 
                                 emailArrayList.add(email);
-                            }
 
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -218,7 +223,8 @@ public class PrimaryFragment extends Fragment implements View.OnClickListener, R
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.primary_fragment_newEmail_fab:
-                Toast.makeText(context, "New email", Toast.LENGTH_SHORT).show();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(
+                        R.id.main_layout_container, new NewEmailFragment()).addToBackStack(null).commit();
                 break;
             case R.id.primary_fragment_scrolltotop_fab:
                 recyclerView.smoothScrollToPosition(0);
@@ -227,7 +233,8 @@ public class PrimaryFragment extends Fragment implements View.OnClickListener, R
     }
 
     /**
-     * Handles what
+     * Handles recyclerview item swiped
+     *
      * @param viewHolder
      * @param direction
      * @param position
@@ -239,12 +246,18 @@ public class PrimaryFragment extends Fragment implements View.OnClickListener, R
 
         adapter.removeItem(position);
 
-        Snackbar.make(layoutContainer,"Email archived",Snackbar.LENGTH_LONG)
+        Snackbar.make(layoutContainer, "Email archived", Snackbar.LENGTH_LONG)
+                .setActionTextColor(ContextCompat.getColor(context, R.color.colorIconTintSelected))
                 .setAction("UNDO", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        adapter.addItem(position,deletedEmail);
+                        adapter.addItem(position, deletedEmail);
                     }
                 }).show();
+    }
+
+    @Override
+    public void onItemClicked(int position) {
+        Toast.makeText(context, "Position" + position, Toast.LENGTH_SHORT).show();
     }
 }

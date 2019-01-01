@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@color/colorStandardWhite"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="4dp"
+        android:paddingStart="10dp"
+        android:weightSum="100">
+
+        <TextView
+            android:id="@+id/newemail_from_textview"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:layout_weight="15"
+            android:text="From"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/newemail_from_edittext"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:layout_weight="85"
+            android:autofillHints=""
+            android:background="@android:color/transparent"
+            android:inputType="text"
+            android:maxLines="1"
+            android:textColor="@color/colorSubject"
+            android:textCursorDrawable="@color/colorTimestamp"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorLightGrey" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@color/colorStandardWhite"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="4dp"
+        android:paddingStart="10dp"
+        android:weightSum="100">
+
+        <TextView
+            android:id="@+id/newemail_to_textview"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:layout_weight="15"
+            android:text="To"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/newemail_to_edittext"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:layout_weight="85"
+            android:autofillHints=""
+            android:background="@android:color/transparent"
+            android:inputType="text"
+            android:maxLines="1"
+            android:textColor="@color/colorSubject"
+            android:textCursorDrawable="@color/colorTimestamp"
+            android:textSize="16sp" />
+
+        <ImageView
+            android:clickable="true"
+            android:id="@+id/new_email_fragment_dropdown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|end"
+            android:src="@drawable/ic_arrow_drop_down_black_24dp" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorLightGrey" />
+
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/new_email_cc_container"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@color/colorStandardWhite"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="4dp"
+        android:paddingStart="10dp"
+        android:weightSum="100">
+
+        <TextView
+            android:id="@+id/newemail_cc_textview"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:layout_weight="15"
+            android:text="Cc"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/newemail_cc_edittext"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:layout_weight="85"
+            android:autofillHints=""
+            android:background="@android:color/transparent"
+            android:inputType="text"
+            android:maxLines="1"
+            android:textColor="@color/colorSubject"
+            android:textCursorDrawable="@color/colorTimestamp"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <View
+        android:visibility="gone"
+        android:id="@+id/new_email_divider_one"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorLightGrey" />
+
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/new_email_bcc_container"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@color/colorStandardWhite"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="4dp"
+        android:paddingStart="10dp"
+        android:weightSum="100">
+
+        <TextView
+            android:id="@+id/newemail_bcc_textview"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:layout_weight="15"
+            android:text="Bcc"
+            android:textSize="16sp" />
+
+        <EditText
+
+            android:id="@+id/newemail_bcc_edittext"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:layout_weight="85"
+            android:autofillHints=""
+            android:background="@android:color/transparent"
+            android:inputType="text"
+            android:maxLines="1"
+            android:textColor="@color/colorSubject"
+            android:textCursorDrawable="@color/colorTimestamp"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/new_email_divider_two"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorLightGrey" />
+
+    <EditText
+        android:id="@+id/new_email_subject"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginStart="20dp"
+        android:background="@android:color/transparent"
+        android:hint="Subject"
+        android:textCursorDrawable="@color/colorTimestamp"
+        android:textSize="16sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorLightGrey" />
+
+    <EditText
+        android:id="@+id/new_email_composee"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginStart="20dp"
+        android:background="@android:color/transparent"
+        android:hint="Compose email"
+        android:textCursorDrawable="@color/colorTimestamp"
+        android:textSize="16sp" />
+
+
+</LinearLayout>
