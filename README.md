@@ -1,4 +1,4 @@
-#Android-GmailAppClone
+# Android-GmailAppClone
 
 _My attempt to recreate the Android Gmail App, together with some of my personal touch._
 
